@@ -1,12 +1,12 @@
 import express from "express"
-import DestinationModel from "../../models/index.js"
+import AccommodationModel from "../accommodation/schema.js"
 
 const { Router } = express
 
 const destinationRouter = new Router()
 
 destinationRouter.get("/", async (req, res) => {
-    const data = await DestinationModel.find({})
+    const data = await AccommodationModel.find({})
     let allCities = data.map(des => des.city)
 
     let cities = [];
@@ -20,7 +20,7 @@ destinationRouter.get("/", async (req, res) => {
 
 destinationRouter.get('/:city', async (req, res) => {
     try {
-        const destination = await DestinationModel.find({ city: req.params.city })
+        const destination = await AccommodationModel.find({ city: req.params.city })
         if (!destination) {
             res.status(404).send();
             return
@@ -40,7 +40,7 @@ destinationRouter.get('/:city', async (req, res) => {
 
 //         if (!name || !description || !maxGuests || !city) throw new Error("Invalid data")
 
-//         const destination = new DestinationModel({ name, description, maxGuests, city })
+//         const destination = new AccommodationModel({ name, description, maxGuests, city })
 //         await destination.save()
 
 //         res.status(201).send(destination)

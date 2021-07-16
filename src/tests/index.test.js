@@ -1,8 +1,8 @@
 import dotenv from "dotenv"
 import supertest from "supertest"
-import server from "../src/server.js"
 import mongoose from "mongoose"
-import AccommodationModel from "../src/models/index.js"
+import server from "../../src/server.js"
+import AccommodationModel from "../../src/models/index.js"
 
 dotenv.config()
 const request = supertest(server)

@@ -1,5 +1,5 @@
 import express from "express"
-import AccommodationModel from "../../models/index.js"
+import AccommodationModel from "./schema.js"
 
 const { Router } = express
 
