@@ -6,6 +6,7 @@ const AccommodationSchema = new Schema({
     description: { type: String, required: true }, 
     maxGuests: { type: Number, required: true }, 
     city: { type: String, required: true },
+    available: { type: Boolean, required: true },
     user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
 }, { timestamps: true })
 

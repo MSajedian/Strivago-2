@@ -1,16 +1,18 @@
 import express from "express"
 import AccommodationModel from "./schema.js"
+import { adminOnly } from '../../auth/adminOnly.js'
+import { JWTAuthMiddleware } from '../../auth/middlewares.js'
 
 const { Router } = express
 
 const accommodationRouter = new Router()
 
-accommodationRouter.get("/", async (req, res) => {
+accommodationRouter.get("/", JWTAuthMiddleware, adminOnly, async (req, res) => {
     const accommodation = await AccommodationModel.find({})
     res.status(200).send({ accommodation })
 })
 
-accommodationRouter.get('/:id', async (req, res) => {
+accommodationRouter.get('/:id', JWTAuthMiddleware, adminOnly, async (req, res) => {
     try {
         const accommodation = await AccommodationModel.findById(req.params.id)
         if (!accommodation) {
@@ -24,7 +26,7 @@ accommodationRouter.get('/:id', async (req, res) => {
 })
 
 
-accommodationRouter.post("/", async (req, res) => {
+accommodationRouter.post("/", JWTAuthMiddleware, adminOnly, async (req, res) => {
 
     try {
         const { name, description, maxGuests, city } = req.body
@@ -42,7 +44,7 @@ accommodationRouter.post("/", async (req, res) => {
 })
 
 
-accommodationRouter.put("/:id", async (req, res, next) => {
+accommodationRouter.put("/:id", JWTAuthMiddleware, adminOnly, async (req, res, next) => {
     try {
         const accommodation = await AccommodationModel.findById(req.params.id)
         if (!accommodation) {
@@ -55,13 +57,13 @@ accommodationRouter.put("/:id", async (req, res, next) => {
         }
     } catch (error) {
         console.log(error.message)
-        res.status(500).send({message: error.message})
+        res.status(500).send({ message: error.message })
     }
 })
 
 
 
-accommodationRouter.delete('/:id', async (req, res, next) => {
+accommodationRouter.delete('/:id', JWTAuthMiddleware, adminOnly, async (req, res, next) => {
     try {
         // if (req.params.id.length !== 23) {
         //     res.status(404).send();

@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors"
-// import accommodationRouter from "./services/accommodation/index.js"
-// import destinationRouter from "./services/destination/index.js"
+import accommodationRouter from "./services/accommodation/index.js"
+import destinationRouter from "./services/destination/index.js"
 import usersRouter from "./services/users/index.js"
 
 import { forbiddenHandler, notFoundErrorHandler, badRequestErrorHandler, catchAllErrorHandler, unAuthorizedHandler } from "./errorHandlers.js"
@@ -17,9 +17,9 @@ server.use(express.json())
 // ******** ROUTES ************
 
 server.use("/user", usersRouter)
-// server.use("/accommodation", accommodationRouter)
-// server.use("/destinations", destinationRouter)
-// server.get("/test", (req, res) => { res.status(200).send({ message: "Test Success!" }) })
+server.use("/accommodation", accommodationRouter)
+server.use("/destinations", destinationRouter)
+server.get("/test", (req, res) => { res.status(200).send({ message: "Test Success!" }) })
 
 // ******** ERROR MIDDLEWARES ************
 

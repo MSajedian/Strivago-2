@@ -9,8 +9,6 @@ const UserSchema = new Schema(
     email: { type: String, required: true, lowercase: true, },
     password: { type: String, required: true },
     role: { type: String, required: true, enum: ["host", "guest"] },
-    // age: { type: Number, min: [18, "You are too young!"], max: 65, default: 18, },
-    // professions: [String],
   },
   { timestamps: true }
 )

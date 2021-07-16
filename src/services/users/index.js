@@ -67,32 +67,32 @@ usersRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
   }
 })
 
-// usersRouter.put("/me", JWTAuthMiddleware, async (req, res, next) => {
-//   try {
-//     const user = await UserModel.findByIdAndUpdate(req.user._id, req.body, {
-//       runValidators: true,
-//       new: true,
-//     })
-//     if (user) {
-//       res.send(user)
-//     } else {
-//       next(createError(404, `User ${req.params.id} not found`))
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     next(createError(500, "An error occurred while modifying user"))
-//   }
-// })
+usersRouter.put("/me", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const user = await UserModel.findByIdAndUpdate(req.user._id, req.body, {
+      runValidators: true,
+      new: true,
+    })
+    if (user) {
+      res.send(user)
+    } else {
+      next(createError(404, `User ${req.params.id} not found`))
+    }
+  } catch (error) {
+    console.log(error)
+    next(createError(500, "An error occurred while modifying user"))
+  }
+})
 
 // **************************** /me/accommodation ****************************
 usersRouter.post("/me/accommodation", JWTAuthMiddleware, hostOnly, async (req, res, next) => {
   try {
-    const { name, description, maxGuests, city } = req.body
+    const { name, description, maxGuests, city, available } = req.body
 
-    if (!name || !description || !maxGuests || !city) throw new Error("Invalid data")
+    if (!name || !description || !maxGuests || !city || !available) throw new Error("Invalid data")
 
     // const user = req.user._id
-    const accommodation = new AccommodationModel({ name, description, maxGuests, city, "user": req.user._id })
+    const accommodation = new AccommodationModel({ name, description, maxGuests, city, "user": req.user._id, available })
     const { _id } = await accommodation.save()
 
     res.status(201).send({ _id })
@@ -112,67 +112,76 @@ usersRouter.get("/me/accommodation", JWTAuthMiddleware, hostOnly, async (req, re
   }
 })
 
+usersRouter.get("/me/available-accommodation", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const accommodation = await AccommodationModel.find({ available: true })
+    res.status(200).send(accommodation)
+  } catch (error) {
+    next(error)
+  }
+})
+
 
 // *************************************************************************************
 
 // **************************** For Admin ****************************
 
-// usersRouter.get("/", JWTAuthMiddleware, adminOnly, async (req, res, next) => {
-//   try {
-//     const users = await UserModel.find()
-//     res.send(users)
-//   } catch (error) {
-//     next(error)
-//   }
-// })
+usersRouter.get("/", JWTAuthMiddleware, adminOnly, async (req, res, next) => {
+  try {
+    const users = await UserModel.find()
+    res.send(users)
+  } catch (error) {
+    next(error)
+  }
+})
 
 
-// usersRouter.get("/:id", JWTAuthMiddleware, adminOnly, async (req, res, next) => {
-//   try {
-//     const id = req.params.id
-//     const user = await UserModel.findById(id)
-//     if (user) {
-//       res.send(user)
-//     } else {
-//       next(createError(404, `User ${req.params.id} not found`))
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     next(createError(500, "An error occurred while getting user"))
-//   }
-// })
+usersRouter.get("/:id", JWTAuthMiddleware, adminOnly, async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const user = await UserModel.findById(id)
+    if (user) {
+      res.send(user)
+    } else {
+      next(createError(404, `User ${req.params.id} not found`))
+    }
+  } catch (error) {
+    console.log(error)
+    next(createError(500, "An error occurred while getting user"))
+  }
+})
 
 
 
-// usersRouter.put("/:id", JWTAuthMiddleware, adminOnly, async (req, res, next) => {
-//   try {
-//     const user = await UserModel.findByIdAndUpdate(req.params.id, req.body, {
-//       runValidators: true,
-//       new: true,
-//     })
-//     if (user) {
-//       res.send(user)
-//     } else {
-//       next(createError(404, `User ${req.params.id} not found`))
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     next(createError(500, "An error occurred while modifying user"))
-//   }
-// })
+usersRouter.put("/:id", JWTAuthMiddleware, adminOnly, async (req, res, next) => {
+  try {
+    const user = await UserModel.findByIdAndUpdate(req.params.id, req.body, {
+      runValidators: true,
+      new: true,
+    })
+    if (user) {
+      res.send(user)
+    } else {
+      next(createError(404, `User ${req.params.id} not found`))
+    }
+  } catch (error) {
+    console.log(error)
+    next(createError(500, "An error occurred while modifying user"))
+  }
+})
 
-// usersRouter.delete("/:id", JWTAuthMiddleware, adminOnly, async (req, res, next) => {
-//   try {
-//     const user = await UserModel.findByIdAndDelete(req.params.id)
-//     if (user) {
-//       res.status(204).send()
-//     } else {
-//       next(createError(404, `User ${req.params.id} not found`))
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     next(createError(500, "An error occurred while deleting student"))
-//   }
-// })
+usersRouter.delete("/:id", JWTAuthMiddleware, adminOnly, async (req, res, next) => {
+  try {
+    const user = await UserModel.findByIdAndDelete(req.params.id)
+    if (user) {
+      res.status(204).send()
+    } else {
+      next(createError(404, `User ${req.params.id} not found`))
+    }
+  } catch (error) {
+    console.log(error)
+    next(createError(500, "An error occurred while deleting"))
+  }
+})
 
 export default usersRouter

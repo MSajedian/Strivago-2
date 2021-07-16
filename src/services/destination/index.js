@@ -1,11 +1,13 @@
 import express from "express"
 import AccommodationModel from "../accommodation/schema.js"
+import { adminOnly } from '../../auth/adminOnly.js'
+import { JWTAuthMiddleware } from '../../auth/middlewares.js'
 
 const { Router } = express
 
 const destinationRouter = new Router()
 
-destinationRouter.get("/", async (req, res) => {
+destinationRouter.get("/", JWTAuthMiddleware, adminOnly, async (req, res) => {
     const data = await AccommodationModel.find({})
     let allCities = data.map(des => des.city)
 
@@ -18,7 +20,7 @@ destinationRouter.get("/", async (req, res) => {
     res.status(200).send({ cities })
 })
 
-destinationRouter.get('/:city', async (req, res) => {
+destinationRouter.get('/:city', JWTAuthMiddleware, adminOnly, async (req, res) => {
     try {
         const destination = await AccommodationModel.find({ city: req.params.city })
         if (!destination) {
